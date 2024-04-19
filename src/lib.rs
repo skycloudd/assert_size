@@ -1,31 +1,49 @@
+#![no_std]
+#![doc = include_str!("../README.md")]
+#![forbid(unsafe_code)]
+#![warn(missing_docs)]
+#![warn(clippy::pedantic)]
+#![warn(clippy::nursery)]
+
+/// Asserts that the size of a type is equal to a given value.
+///
+/// # Examples
+///
+/// ```
+/// use assert_size::assert_size;
+///
+/// assert_size!((), 0); // 0 bytes
+/// assert_size!(bool, 1); // 1 byte
+/// assert_size!([u8; 3], 3); // 3 bytes
+/// ```
 #[macro_export]
 macro_rules! assert_size {
-    ($size:expr, $t:ty) => {
+    ($t:ty, $size:expr) => {
         const _: [(); $size] = [(); core::mem::size_of::<$t>()];
     };
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::assert_size;
 
     #[test]
-    fn zst() {
-        assert_size!(0, ()); // 0 bytes
+    const fn zst() {
+        assert_size!((), 0); // 0 bytes
     }
 
     #[test]
-    fn bool() {
-        assert_size!(1, bool); // 1 byte
+    const fn bool() {
+        assert_size!(bool, 1); // 1 byte
     }
 
     #[test]
-    fn array() {
-        assert_size!(3, [u8; 3]); // 3 * u8 = 3 bytes
+    const fn array() {
+        assert_size!([u8; 3], 3); // 3 * u8 = 3 bytes
     }
 
     #[test]
-    fn struct_() {
+    const fn struct_() {
         #[allow(dead_code)]
         struct S {
             a: u8, // 1 byte
@@ -33,11 +51,11 @@ mod tests {
             b: u16, // 2 bytes
         }
 
-        assert_size!(4, S); // 2 + 1 + 1 (padding)
+        assert_size!(S, 4); // 2 + 1 + 1 (padding)
     }
 
     #[test]
-    fn enum_() {
+    const fn enum_() {
         #[allow(dead_code)]
         enum E {
             A,      // 1 byte  (discriminant)
@@ -45,6 +63,6 @@ mod tests {
             C(u16), // 4 bytes (discriminant + padding + u16)
         }
 
-        assert_size!(4, E); // 4 bytes
+        assert_size!(E, 4); // 4 bytes
     }
 }
