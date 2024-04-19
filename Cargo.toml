@@ -6,5 +6,6 @@ license = "MIT OR Apache-2.0"
 description = "A macro to assert that a type has a specific size at compile time"
 repository = "https://github.com/skycloudd/assert_size"
 readme = "README.md"
+exclude = [".github"]
 
 [dependencies]
