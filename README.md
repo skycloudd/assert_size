@@ -1,5 +1,7 @@
 # assert_size
 
+[![Rust](https://github.com/skycloudd/assert_size/actions/workflows/rust.yml/badge.svg)](https://github.com/skycloudd/assert_size/actions/workflows/rust.yml)
+
 A macro to assert that a type has a specific size at compile time
 
 ## Usage
